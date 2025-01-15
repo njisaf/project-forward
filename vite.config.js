@@ -13,7 +13,11 @@ export default defineConfig({
       fileName: 'index'
     },
     rollupOptions: {
-      external: ['foundry']
+      external: [
+        'foundry',
+        /^@typhonjs-fvtt\/runtime\/.*/,
+        /^svelte\/.*/
+      ]
     }
   },
   server: {
