@@ -1,8 +1,15 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
+import preprocess from 'svelte-preprocess';
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [svelte({
+    preprocess: preprocess({
+      scss: {
+        prependData: '@use "src/styles/init.scss" as *;'
+      }
+    })
+  })],
   build: {
     outDir: 'dist',
     emptyOutDir: true,

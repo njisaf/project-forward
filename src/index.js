@@ -5,7 +5,7 @@
  */
 
 import './styles/init.scss';
-import { CharacterDataModel } from './module/data/CharacterDataModel.js';
+import { CharacterDataModel } from './module/data/CharacterDataModel';
 import { SvelteApplication } from '#runtime/svelte/application';
 import { scale } from 'svelte/transition';
 import CharacterSheetShell from './view/components/character/CharacterSheetShell.svelte';
