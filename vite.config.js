@@ -1,15 +1,26 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 import preprocess from 'svelte-preprocess';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
-  plugins: [svelte({
-    preprocess: preprocess({
-      scss: {
-        prependData: '@use "src/styles/init.scss" as *;'
-      }
+  plugins: [
+    svelte({
+      preprocess: preprocess({
+        scss: {
+          prependData: '@use "src/styles/init.scss" as *;'
+        }
+      })
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'module.json',
+          dest: '.'
+        }
+      ]
     })
-  })],
+  ],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
