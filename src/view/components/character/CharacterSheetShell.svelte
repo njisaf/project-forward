@@ -20,7 +20,7 @@
     
     <section class="attributes">
       <h2>Attributes</h2>
-      {#each Object.entries(actor.attributes) as [name, value]}
+      {#each Object.entries(actor.attributes) as [name]}
         <div class="attribute">
           <label>{name}</label>
           <input type="number" bind:value={actor.attributes[name]} min="1" />
@@ -40,7 +40,7 @@
     
     <section class="skills">
       <h2>Skills</h2>
-      {#each Object.entries(actor.skills) as [name, value]}
+      {#each Object.entries(actor.skills) as [name]}
         <div class="skill">
           <label>{name}</label>
           <input type="number" bind:value={actor.skills[name]} />
