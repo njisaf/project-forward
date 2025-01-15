@@ -39,6 +39,7 @@
     "svelte-preprocess": "^6.0.3",
     "typescript": "^5.0.4",
     "vite": "^5.0.0",
+    "vite-plugin-static-copy": "^2.2.0",
     "vitest": "^0.34.0"
   }
 }
