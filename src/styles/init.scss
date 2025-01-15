@@ -1,0 +1,15 @@
+// Global styles for Project Forward
+:root {
+  --pf-primary-color: #ff3e00;
+  --pf-text-color: #2c3e50;
+  --pf-background-color: #f9f9f9;
+}
+
+.project-forward {
+  color: var(--pf-text-color);
+  background-color: var(--pf-background-color);
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--pf-primary-color);
+  }
+}

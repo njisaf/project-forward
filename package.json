@@ -1,0 +1,20 @@
+{
+  "name": "project-forward",
+  "version": "0.1.0",
+  "description": "A Foundry VTT module development framework using TyphonJS Runtime Library",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@typhonjs-fvtt/runtime": "^0.2.0",
+    "svelte": "^4.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.1",
+    "sass": "^1.63.4",
+    "vite": "^4.3.9"
+  }
+}
