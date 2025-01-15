@@ -1,58 +1,72 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { CharacterDataModel } from '../module/data/CharacterDataModel.js';
 
-interface FieldConfig {
+interface FieldValue {
   required?: boolean;
-  initial?: any;
+  initial?: string | number;
   min?: number;
   integer?: boolean;
 }
 
-interface SchemaConfig {
-  [key: string]: any;
+interface CharacterData {
+  characterName?: string;
+  level?: number;
+  attributes?: {
+    strength?: number;
+    [key: string]: number | undefined;
+  };
+}
+
+interface DataSchema {
+  [key: string]: FieldValue | DataSchema;
 }
 
 // Mock Foundry VTT API
 const mockFoundry = {
   abstract: {
     DataModel: class {
-      [key: string]: any;
-      constructor(data: Record<string, any>) {
-        Object.assign(this, {
+      characterName!: string;
+      level!: number;
+      attributes!: { strength: number };
+
+      constructor(data: Partial<CharacterData> = {}) {
+        const defaults = {
           characterName: 'New Character',
           level: 1,
           attributes: {
             strength: 10
           }
-        }, data);
+        };
+        Object.assign(this, defaults, data);
       }
-      static defineSchema(): Record<string, any> { return {}; }
+
+      static defineSchema(): DataSchema { return {}; }
     }
   },
   data: {
     fields: {
       StringField: class {
-        config: FieldConfig;
-        constructor(config: FieldConfig) { this.config = config; }
+        config: FieldValue;
+        constructor(config: FieldValue) { this.config = config; }
       },
       NumberField: class {
-        config: FieldConfig;
-        constructor(config: FieldConfig) { this.config = config; }
+        config: FieldValue;
+        constructor(config: FieldValue) { this.config = config; }
       },
       SchemaField: class {
-        schema: SchemaConfig;
-        constructor(schema: SchemaConfig) { this.schema = schema; }
+        schema: DataSchema;
+        constructor(schema: DataSchema) { this.schema = schema; }
       }
     }
   },
   utils: {
-    mergeObject: (target: Record<string, any>, source: Record<string, any>): Record<string, any> => 
-      ({ ...target, ...source })
+    mergeObject: <T extends object>(target: T, source: Partial<T>): T => 
+      ({ ...target, ...source } as T)
   }
 };
 
 beforeAll(() => {
-  // @ts-ignore
+  // @ts-expect-error - Mock foundry global for testing
   global.foundry = mockFoundry;
 });
 
