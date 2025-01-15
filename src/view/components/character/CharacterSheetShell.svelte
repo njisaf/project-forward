@@ -1,5 +1,5 @@
 <script>
-  import { TJSApplicationShell } from '#runtime/svelte/component/application';
+  import { ApplicationShell } from '#runtime/svelte/component/application';
   import { scale } from 'svelte/transition';
   
   // ApplicationShell Contract
@@ -11,7 +11,7 @@
 
 <svelte:options accessors={true}/>
 
-<TJSApplicationShell bind:elementRoot transition={scale} transitionOptions={{ duration: 200 }}>
+<ApplicationShell bind:elementRoot transition={scale} transitionOptions={{ duration: 200 }}>
   <main class="character-sheet">
     <header>
       <h1>{actor.characterName}</h1>
@@ -48,9 +48,14 @@
       {/each}
     </section>
   </main>
-</TJSApplicationShell>
+</ApplicationShell>
 
 <style lang="scss">
+  :global(.window-app.sheet.actor) {
+    min-width: 800px;
+    min-height: 600px;
+  }
+  
   .character-sheet {
     padding: 1rem;
     
