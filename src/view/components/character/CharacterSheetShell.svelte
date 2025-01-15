@@ -1,16 +1,17 @@
 <script>
-  import { ApplicationShell } from '#runtime/svelte/component/application';
+  import { TJSApplicationShell } from '#runtime/svelte/component/application';
+  import { scale } from 'svelte/transition';
   
   // ApplicationShell Contract
-  export let elementRoot;
+  export let elementRoot = void 0;
   
   // Character Data
-  export let actor;
+  export let actor = void 0;
 </script>
 
 <svelte:options accessors={true}/>
 
-<ApplicationShell bind:elementRoot>
+<TJSApplicationShell bind:elementRoot transition={scale} transitionOptions={{ duration: 200 }}>
   <main class="character-sheet">
     <header>
       <h1>{actor.characterName}</h1>

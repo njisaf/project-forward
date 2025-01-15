@@ -42,6 +42,17 @@ class CharacterSheetApplication extends SvelteApplication {
       actor: this.object
     };
   }
+
+  /**
+   * @override
+   * Render the Application by getting data and passing it to the Svelte component.
+   */
+  render(force = false, options = {}) {
+    if (!this.object) {
+      return;
+    }
+    return super.render(force, options);
+  }
 }
 
 // Initialize the module
