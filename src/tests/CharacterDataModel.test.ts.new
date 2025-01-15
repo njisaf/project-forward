@@ -1,0 +1,320 @@
+import { describe, it, expect, beforeAll } from 'vitest';
+import type { CharacterSchema, CharacterData } from '../types/character';
+
+// Set up mock before tests
+beforeAll(() => {
+  // @ts-expect-error - Mock foundry global for testing
+  global.foundry = {
+    abstract: {
+      DataModel: class MockDataModel {
+        protected _data: Required<CharacterData>;
+
+        constructor(data: Partial<CharacterData> = {}) {
+          const defaults: Required<CharacterData> = {
+            characterName: 'New Character',
+            level: 1,
+            attributes: {
+              strength: 10,
+              dexterity: 10,
+              constitution: 10,
+              intelligence: 10,
+              wisdom: 10,
+              charisma: 10
+            },
+            skills: {
+              acrobatics: 0,
+              athletics: 0,
+              deception: 0,
+              insight: 0,
+              intimidation: 0,
+              investigation: 0
+            },
+            health: {
+              current: 10,
+              max: 10
+            },
+            actionPoints: 3
+          };
+
+          // Handle provided data
+          const sanitizedData = { ...data };
+          if (sanitizedData.characterName !== undefined) {
+            sanitizedData.characterName = sanitizedData.characterName.trim();
+          }
+
+          // Merge with type safety
+          this._data = {
+            ...defaults,
+            ...sanitizedData,
+            attributes: {
+              ...defaults.attributes,
+              ...(sanitizedData.attributes || {})
+            },
+            skills: {
+              ...defaults.skills,
+              ...(sanitizedData.skills || {})
+            },
+            health: {
+              ...defaults.health,
+              ...(sanitizedData.health || {})
+            }
+          } as Required<CharacterData>;
+        }
+
+        static defineSchema(): CharacterSchema {
+          return {
+            characterName: {
+              type: String,
+              required: true,
+              nullable: false,
+              initial: 'New Character'
+            },
+            level: {
+              type: Number,
+              required: true,
+              nullable: false,
+              initial: 1,
+              min: 1
+            },
+            attributes: {
+              type: Object,
+              required: true,
+              initial: {
+                strength: 10,
+                dexterity: 10,
+                constitution: 10,
+                intelligence: 10,
+                wisdom: 10,
+                charisma: 10
+              },
+              fields: {
+                strength: { type: Number, required: true, min: 1 },
+                dexterity: { type: Number, required: true, min: 1 },
+                constitution: { type: Number, required: true, min: 1 },
+                intelligence: { type: Number, required: true, min: 1 },
+                wisdom: { type: Number, required: true, min: 1 },
+                charisma: { type: Number, required: true, min: 1 }
+              }
+            },
+            skills: {
+              type: Object,
+              required: true,
+              initial: {
+                acrobatics: 0,
+                athletics: 0,
+                deception: 0,
+                insight: 0,
+                intimidation: 0,
+                investigation: 0
+              },
+              fields: {
+                acrobatics: { type: Number },
+                athletics: { type: Number },
+                deception: { type: Number },
+                insight: { type: Number },
+                intimidation: { type: Number },
+                investigation: { type: Number }
+              }
+            },
+            health: {
+              type: Object,
+              required: true,
+              initial: {
+                current: 10,
+                max: 10
+              },
+              fields: {
+                current: { type: Number, required: true },
+                max: { type: Number, required: true }
+              }
+            },
+            actionPoints: {
+              type: Number,
+              required: true,
+              initial: 3,
+              min: 0
+            }
+          };
+        }
+
+        get characterName(): string {
+          return this._data.characterName;
+        }
+        
+        set characterName(value: string) {
+          const trimmed = value?.trim();
+          if (!trimmed) {
+            throw new Error('Character name cannot be empty');
+          }
+          this._data.characterName = trimmed;
+        }
+
+        get level(): number { 
+          return this._data.level;
+        }
+        
+        set level(value: number) {
+          if (value < 1) {
+            throw new Error('Level must be at least 1');
+          }
+          this._data.level = value;
+        }
+
+        get attributes(): Required<CharacterData>['attributes'] { 
+          return this._data.attributes;
+        }
+        
+        get skills(): Required<CharacterData>['skills'] { 
+          return this._data.skills;
+        }
+        
+        get health(): Required<CharacterData>['health'] { 
+          return this._data.health;
+        }
+
+        get actionPoints(): number { 
+          return this._data.actionPoints;
+        }
+        
+        set actionPoints(value: number) {
+          if (value < 0) throw new Error('Action points cannot be negative');
+          this._data.actionPoints = value;
+        }
+      }
+    },
+    data: {
+      fields: {
+        StringField: { type: String },
+        NumberField: { type: Number },
+        SchemaField: { type: Object }
+      }
+    },
+    utils: {
+      mergeObject: <T extends object>(target: T, source: Partial<T>): Required<T> => {
+        const result = { ...target } as Required<T>;
+        
+        for (const [key, value] of Object.entries(source)) {
+          if (value === undefined) continue;
+          
+          const targetValue = result[key as keyof T];
+          if (value && typeof value === 'object' && !Array.isArray(value) && targetValue && typeof targetValue === 'object') {
+            result[key as keyof T] = {
+              ...targetValue,
+              ...value
+            } as Required<T>[keyof T];
+          } else if (value !== undefined) {
+            result[key as keyof T] = value as Required<T>[keyof T];
+          }
+        }
+        
+        return result;
+      }
+    }
+  };
+});
+
+// Import after mock setup
+import { CharacterDataModel } from '../module/data/CharacterDataModel';
+
+describe('CharacterDataModel', () => {
+  it('should initialize with default values', () => {
+    const model = new CharacterDataModel({});
+    
+    // Basic properties
+    expect(model.characterName).toBe('New Character');
+    expect(model.level).toBe(1);
+    expect(model.actionPoints).toBe(3);
+    
+    // Attributes
+    expect(model.attributes.strength).toBe(10);
+    expect(model.attributes.dexterity).toBe(10);
+    expect(model.attributes.constitution).toBe(10);
+    expect(model.attributes.intelligence).toBe(10);
+    expect(model.attributes.wisdom).toBe(10);
+    expect(model.attributes.charisma).toBe(10);
+    
+    // Skills
+    expect(model.skills.acrobatics).toBe(0);
+    expect(model.skills.athletics).toBe(0);
+    expect(model.skills.deception).toBe(0);
+    expect(model.skills.insight).toBe(0);
+    expect(model.skills.intimidation).toBe(0);
+    expect(model.skills.investigation).toBe(0);
+    
+    // Health
+    expect(model.health.current).toBe(10);
+    expect(model.health.max).toBe(10);
+  });
+
+  it('should accept custom values', () => {
+    const model = new CharacterDataModel({
+      characterName: 'Custom Hero',
+      level: 5,
+      attributes: {
+        strength: 15,
+        dexterity: 12,
+        constitution: 14,
+        intelligence: 13,
+        wisdom: 11,
+        charisma: 16
+      },
+      skills: {
+        acrobatics: 2,
+        athletics: 3,
+        deception: 1,
+        insight: 2,
+        intimidation: 3,
+        investigation: 2
+      },
+      health: {
+        current: 20,
+        max: 25
+      },
+      actionPoints: 5
+    });
+
+    // Verify all custom values
+    expect(model.characterName).toBe('Custom Hero');
+    expect(model.level).toBe(5);
+    expect(model.actionPoints).toBe(5);
+    
+    // Attributes
+    expect(model.attributes.strength).toBe(15);
+    expect(model.attributes.dexterity).toBe(12);
+    expect(model.attributes.constitution).toBe(14);
+    expect(model.attributes.intelligence).toBe(13);
+    expect(model.attributes.wisdom).toBe(11);
+    expect(model.attributes.charisma).toBe(16);
+    
+    // Skills
+    expect(model.skills.acrobatics).toBe(2);
+    expect(model.skills.athletics).toBe(3);
+    expect(model.skills.deception).toBe(1);
+    expect(model.skills.insight).toBe(2);
+    expect(model.skills.intimidation).toBe(3);
+    expect(model.skills.investigation).toBe(2);
+    
+    // Health
+    expect(model.health.current).toBe(20);
+    expect(model.health.max).toBe(25);
+  });
+
+  it('should validate required fields and ranges', () => {
+    const model = new CharacterDataModel({});
+    
+    // Name validation
+    expect(() => {
+      model.characterName = '';
+    }).toThrow();
+    
+    // Level validation
+    expect(() => {
+      model.level = 0;
+    }).toThrow();
+    
+    // Action points validation
+    expect(() => {
+      model.actionPoints = -1;
+    }).toThrow();
+  });
+});
