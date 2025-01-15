@@ -48,7 +48,7 @@
       {/each}
     </section>
   </main>
-</ApplicationShell>
+</TJSApplicationShell>
 
 <style lang="scss">
   .character-sheet {

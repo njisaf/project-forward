@@ -3,25 +3,40 @@
   "version": "0.1.0",
   "description": "A Foundry VTT module development framework using TyphonJS Runtime Library",
   "type": "module",
+  "imports": {
+    "#runtime/*": "@typhonjs-fvtt/runtime/*",
+    "#standard/*": "@typhonjs-fvtt/standard/*"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "lint": "eslint . --ext .js,.ts,.svelte",
-    "lint:fix": "eslint . --ext .js,.ts,.svelte --fix"
+    "lint": "eslint 'src/**/*.{js,ts,svelte}'",
+    "lint:fix": "eslint . --ext .js,.ts,.svelte --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@typhonjs-fvtt/runtime": "^0.2.0",
-    "svelte": "^4.0.0"
+    "@typhonjs-fvtt/runtime": "^0.2.0-next.8",
+    "@typhonjs-fvtt/standard": "^0.2.0-next.4",
+    "svelte": "^4.2.19"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^2.4.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.9",
-    "@typescript-eslint/parser": "^5.59.9",
+    "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@testing-library/svelte": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "@typhonjs-config/eslint-config": "^0.6.0",
+    "@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
     "eslint": "^8.42.0",
-    "eslint-plugin-svelte3": "^4.0.0",
+    "eslint-plugin-svelte": "^2.46.1",
     "sass": "^1.63.4",
+    "svelte-eslint-parser": "^0.43.0",
     "typescript": "^5.0.4",
-    "vite": "^4.3.9"
+    "vite": "^5.0.0",
+    "vitest": "^0.34.0"
   }
 }

@@ -1,34 +1,40 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true
-  },
+  "root": true,
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "tsconfigRootDir": ".",
+    "project": ["./tsconfig.json"]
   },
   "plugins": [
     "@typescript-eslint",
-    "svelte3"
+    "svelte"
   ],
   "overrides": [
     {
       "files": ["*.svelte"],
-      "processor": "svelte3/svelte3"
+      "parser": "svelte-eslint-parser",
+      "parserOptions": {
+        "parser": {
+          "ts": "@typescript-eslint/parser"
+        }
+      }
     }
   ],
-  "settings": {
-    "svelte3/typescript": true
+  "env": {
+    "browser": true,
+    "es2022": true
   },
-  "rules": {
-    "indent": ["error", 2],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+  "globals": {
+    "foundry": "readonly",
+    "game": "readonly",
+    "CONFIG": "readonly",
+    "Hooks": "readonly",
+    "Actors": "readonly"
   }
 }
